@@ -10,15 +10,23 @@ const seed_js_1 = require("./scripts/seed.js");
 const startServer = async () => {
     try {
         await (0, db_js_1.connectDB)();
-        await (0, seed_js_1.seedInitialAdmin)();
-        await (0, seed_js_1.seedInitialProducts)();
-        await (0, seed_js_1.seedInitialSections)();
-        await (0, seed_js_1.seedInitialTaxonomies)();
-        await (0, seed_js_1.seedInitialNews)();
         app_js_1.default.listen(env_js_1.ENV.PORT, () => {
             console.log(`[Server] TotalApparel API Server running on port ${env_js_1.ENV.PORT}`);
             console.log(`[Server] Environment: ${process.env.NODE_ENV || 'development'}`);
         });
+        // Seed in the background so the server starts responding immediately.
+        (async () => {
+            try {
+                await (0, seed_js_1.seedInitialAdmin)();
+                await (0, seed_js_1.seedInitialProducts)();
+                await (0, seed_js_1.seedInitialSections)();
+                await (0, seed_js_1.seedInitialTaxonomies)();
+                await (0, seed_js_1.seedInitialNews)();
+            }
+            catch (seedErr) {
+                console.error('[Server] Seeding error:', seedErr);
+            }
+        })();
     }
     catch (err) {
         console.error('[Server] Failed to start server:', err);

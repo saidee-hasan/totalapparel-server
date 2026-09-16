@@ -4,7 +4,7 @@ exports.createTaxonomyService = void 0;
 const slugify_js_1 = require("../utils/slugify.js");
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const createTaxonomyService = (model, config) => {
-    const { label, fields, required = ['name'], searchFields = ['name', 'slug'], filterFields = ['status'], defaultSort = { sortOrder: 1, name: 1 }, slugSource = 'name', } = config;
+    const { label, fields, required = ['name'], searchFields = ['name', 'slug'], filterFields = ['status'], defaultSort = { sortOrder: 1, name: 1 }, slugSource = 'name', slugFields, } = config;
     const buildPayload = (data) => {
         const payload = {};
         for (const field of fields) {
@@ -17,7 +17,12 @@ const createTaxonomyService = (model, config) => {
         }
         if (typeof payload.name === 'string')
             payload.name = payload.name.trim();
-        const sourceValue = payload.slug || payload[slugSource];
+        let sourceValue = payload.slug;
+        if (!sourceValue && slugFields && slugFields.length) {
+            sourceValue = slugFields.map((f) => payload[f]).filter(Boolean).join(' ');
+        }
+        if (!sourceValue)
+            sourceValue = payload[slugSource];
         if (sourceValue)
             payload.slug = (0, slugify_js_1.slugify)(sourceValue);
         return payload;

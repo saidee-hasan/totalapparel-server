@@ -600,7 +600,7 @@ const seedInitialTaxonomies = async () => {
             Bags: ['Backpacks', 'Handbags', 'Shoulder Bags', 'Crossbody Bags', 'Laptop Bags', 'Travel Bags', 'Wallets'],
             Accessories: ['Belts', 'Caps', 'Hats', 'Sunglasses', 'Watches', 'Scarves', 'Gloves', 'Socks'],
         };
-        const subcategories = Object.entries(subcategoryMap).flatMap(([category, names]) => names.map((name, i) => ({ name, category, sortOrder: i, status: 'active' })));
+        const subcategories = Object.entries(subcategoryMap).flatMap(([category, names]) => names.map((name, i) => ({ name, category, slug: (0, slugify_js_1.slugify)(`${category} ${name}`), sortOrder: i, status: 'active' })));
         await upsertMany(Color_js_1.Color, 'colors', colors);
         await upsertMany(Size_js_1.Size, 'sizes', sizes);
         await upsertMany(Brand_js_1.Brand, 'brands', brands);

@@ -6,16 +6,24 @@ import { seedInitialAdmin, seedInitialProducts, seedInitialSections, seedInitial
 const startServer = async () => {
   try {
     await connectDB();
-    await seedInitialAdmin();
-    await seedInitialProducts();
-    await seedInitialSections();
-    await seedInitialTaxonomies();
-    await seedInitialNews();
 
     app.listen(ENV.PORT, () => {
       console.log(`[Server] TotalApparel API Server running on port ${ENV.PORT}`);
       console.log(`[Server] Environment: ${process.env.NODE_ENV || 'development'}`);
     });
+
+    // Seed in the background so the server starts responding immediately.
+    (async () => {
+      try {
+        await seedInitialAdmin();
+        await seedInitialProducts();
+        await seedInitialSections();
+        await seedInitialTaxonomies();
+        await seedInitialNews();
+      } catch (seedErr) {
+        console.error('[Server] Seeding error:', seedErr);
+      }
+    })();
   } catch (err) {
     console.error('[Server] Failed to start server:', err);
     process.exit(1);

@@ -8,6 +8,7 @@ const service = (0, taxonomyService_js_1.createTaxonomyService)(Subcategory_js_1
     label: 'Subcategory',
     fields: ['name', 'slug', 'category', 'description', 'seoTitle', 'metaDescription', 'keywords', 'status', 'sortOrder'],
     required: ['name', 'category'],
+    slugFields: ['category', 'name'],
     searchFields: ['name', 'slug', 'category', 'description'],
     filterFields: ['status', 'category'],
 });
